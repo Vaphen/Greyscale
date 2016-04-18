@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+	<head>
+		<script src="./jquery.js"></script>
+		<script src="./greyscale.js"></script>
+		<script>
+		$(document).ready(function() {
+		  $(".greyscale").hover(function() {
+				console.log("hover");
+		    $(this).greyscaleOut(200);
+		  }, function() {
+		    $(this).greyscaleIn(200);
+		  });
+		});
+		</script>
+		<style type="text/css">
+
+		</style>
+	</head>
+	<body>
+		<img src="./testpic.jpg" class="greyscale" style="filter: grayscale(100%);" />
+		<img src="./testpic2.jpg" class="greyscale" style="filter: grayscale(100%);" />
+	</body>
+</html>
