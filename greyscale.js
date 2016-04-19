@@ -11,11 +11,11 @@
         animate_greyscale(this, value, time);
         return this;
       };
-      $.fn.greyscaleIn = function(time) {
+      $.fn.greyscaleOn = function(time) {
         animate_greyscale(this, 100, time);
         return this;
       };
-      $.fn.greyscaleOut = function(time) {
+      $.fn.greyscaleOff = function(time) {
         animate_greyscale(this, 0, time);
         return this;
       };
@@ -28,7 +28,7 @@
    */
   function animate_greyscale(element, value, time) {
     // invariants
-    if(time <= 1) {
+    if(time < 1) {
       console.error("Time cannot be less than 1.");
       return;
     }
@@ -42,6 +42,9 @@
     }
 
     function separateFilterValue(cssAttribute) {
+      if(cssAttribute == 'none') {
+        return 0;
+      }
       cssAttribute = cssAttribute.split('grayscale(')[1];
       cssAttribute = cssAttribute.split('%)')[0];
       cssAttribute = parseInt(cssAttribute);
@@ -94,21 +97,25 @@
     // calculate the step-size for 1 ms
     var animationStep = parseInt(curGreyscaleFilter) - parseInt(value);
     animationStep = animationStep / time;
-    // the time in ms that has to pass until the greyscale is in-/decreased by 1
+    // the time in ms that has to pass until the greyscale is in-/decreased by 1 (floating point number)
     var optimumStepAmount = calculateOptimumTimeAmount(animationStep);
     // check if we need to increment or decrement greyscale by 1
     var greyScalingUnit = (animationStep < 0) ? -1 : 1;
 
-    // loop for animation
-    for(i = 0; i < Math.ceil(time / optimumStepAmount); i++) {
+    // the number of the loop-walkthroughs
+    var loopLimitation = (optimumStepAmount < 0) ? time * optimumStepAmount : time / optimumStepAmount;
+    // loop for animation; stop if we loop more than 10000 times (prevent infinite loop)
+    for(i = 0; i < loopLimitation && i <= 10000; i++) {
       (function(index) {
           // change greyscale all optimumStepAmount seconds by timeout the for-loop
           setTimeout(function() {
-            curGreyscaleFilter -= greyScalingUnit;
+            curGreyscaleFilter -= (optimumStepAmount * animationStep);
+            // curGreyscaleFilter is a floating point number; we have to round it
+            var roundedGreyscale = (animationStep < 0) ? Math.floor(curGreyscaleFilter) : Math.ceil(curGreyscaleFilter);
             // set all possible filter values for best crossbrowser support
-            element.css("filter", "grayscale(" + curGreyscaleFilter + "%)");
-            element.css("-webkit-filter", "grayscale(" + curGreyscaleFilter + "%)");
-            element.css("-webkit-filter", "grayscale(" + percentToDecimal(curGreyscaleFilter) + ")");
+            element.css("filter", "grayscale(" + roundedGreyscale + "%)");
+            element.css("-webkit-filter", "grayscale(" + roundedGreyscale + "%)");
+            element.css("-webkit-filter", "grayscale(" + percentToDecimal(roundedGreyscale) + ")");
           }, optimumStepAmount * index);
       })(i);
     }
