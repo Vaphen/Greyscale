@@ -21,6 +21,7 @@
       };
   }(jQuery));
 
+
   /* Function animate_greyscale
    * element: a jquery object of the image element that should be greyscaled
    * value: a value between 0 and 100 (percentage); 100 = it's greyed out, 0 it's colored
@@ -104,20 +105,28 @@
 
     // the number of the loop-walkthroughs
     var loopLimitation = (optimumStepAmount < 0) ? time * optimumStepAmount : time / optimumStepAmount;
-    // loop for animation; stop if we loop more than 10000 times (prevent infinite loop)
-    for(i = 0; i < loopLimitation && i <= 10000; i++) {
-      (function(index) {
-          // change greyscale all optimumStepAmount seconds by timeout the for-loop
-          setTimeout(function() {
-            curGreyscaleFilter -= (optimumStepAmount * animationStep);
-            // curGreyscaleFilter is a floating point number; we have to round it
-            var roundedGreyscale = (animationStep < 0) ? Math.floor(curGreyscaleFilter) : Math.ceil(curGreyscaleFilter);
-            // set all possible filter values for best crossbrowser support
-            element.css("filter", "grayscale(" + roundedGreyscale + "%)");
-            element.css("-webkit-filter", "grayscale(" + roundedGreyscale + "%)");
-            element.css("-webkit-filter", "grayscale(" + percentToDecimal(roundedGreyscale) + ")");
-          }, optimumStepAmount * index);
-      })(i);
+
+
+    function doAnimation() {
+      console.log(optimumStepAmount);
+      // loop for animation; stop if we loop more than 10000 times (prevent infinite loop)
+              curGreyscaleFilter -= (optimumStepAmount * animationStep);
+
+              // curGreyscaleFilter is a floating point number; we have to round it
+              var roundedGreyscale = (animationStep < 0) ? Math.floor(curGreyscaleFilter) : Math.ceil(curGreyscaleFilter);
+              // set all possible filter values for best crossbrowser support
+              element.css("filter", "grayscale(" + roundedGreyscale + "%)");
+              element.css("-webkit-filter", "grayscale(" + roundedGreyscale + "%)");
+              element.css("-webkit-filter", "grayscale(" + percentToDecimal(roundedGreyscale) + ")");
+              //console.log(roundedGreyscale);
+
+              if(roundedGreyscale != value) {
+                setTimeout(doAnimation, optimumStepAmount);
+              }
+
     }
+    setTimeout(doAnimation, optimumStepAmount);
+
+
   }
 })();
