@@ -1,7 +1,9 @@
 # Greyscale
 
-Greyscale is a simple, leightweight JQuery compatible Javascript library, that supports animated (faded) greyscaling of images.
+Greyscale is a simple, leightweight Javascript library that supports animated (faded) greyscaling of images.
 Feel free to us it the way you like on your own Webpage.
+
+### Note: JQuery needed to use this library.
 
 ##Usage
 
@@ -29,4 +31,7 @@ It provides 3 simple JQuery-compatible functions:
 ```
 
 ## Known Bugs:
-  
+no known bugs.
+
+
+If you find a bug, let me know. I'll fix it as fast as i can.
